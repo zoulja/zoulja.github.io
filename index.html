@@ -146,7 +146,7 @@ Vue.component('propsbtn', {
             switch(this.state)
             {
                 case "Start":
-                    that.state = "Starting..."
+                    that.state = "Starting...."
                     axios.get(this.starturl)
                     .then(response => {
                                           that.result = response.data;
