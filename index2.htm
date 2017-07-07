@@ -91,6 +91,7 @@ button[disabled]{
     <script type='text/x-template' id='propsbtn'>
     <div>
         <pre class='titled' align="center">{{ title }}</pre>
+        <input v-model="state" placeholder="edit me"><br><br>
         <button class="buttonload" v-bind:class="state=='Stop' ? 'active' : ''" @click='goto()' :disabled='disabled'>
              <i v-show="disabled" class="fa fa-spinner fa-spin"></i>
             <slot>{{ !state ? "Start" : state}}</slot>
