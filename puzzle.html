@@ -57,10 +57,14 @@ margin-bottom: 0;
         <h1>Train the brain</h1>
         <p>Keep hitting the shuffle button and catch the sequence.</p>
 
-        <button @click="shuffle">
+        <!-- <button @click="showme"> -->
+         <button @click="shuffle"> 
           Shuffle
         </button>
-        <input type="checkbox" id="checkbox" v-model="checked"><label for="checkbox">Перевернуть</label>
+        <input type="checkbox" id="checkbox" v-model="checked"><label for="checkbox">Перевернуть</label><br>
+        <!-- <input name="stopwatch" size=10 v-bind:value="readout"> -->
+        <p>{{ readout }}</p>
+        <input type=button value="Запуск/Остановить" @click="StartStop"> 
 
         <transition-group name="cell" tag="div" class="container">
             <div v-for="cell in cells" :key="cell.id" class="cell" v-bind:class="{ odd: cell.number % 2 == 0, upsidedown: checked }">
@@ -78,12 +82,86 @@ margin-bottom: 0;
                                     }
                                 }),
                             checked: true,
+                            base: 60, 
+                            clocktimer: null,
+                            dateObj: null,
+                            dh: null, 
+                            dm: null, 
+                            ds: null,
+                            ms: null, 
+                            readout:'', 
+                            h: 1,
+                            m: 1,
+                            tm: 1,
+                            s: 0,
+                            ts: 0,
+                            ms: 0,
+                            init: 0,
+                            readout:'00:00:00.00',
                         
                         },
                         methods: {
-                            shuffle: function () {
-                                this.cells = _.shuffle(this.cells)
-                            }
+                           // shuffle: function () {
+                            shuffle () {
+                                this.cells = _.shuffle(this.cells);
+                                setTimeout(this.StartStop,1200);
+                            },
+                            ClearСlock() { 
+                                clearTimeout(this.clocktimer); 
+                                this.h = 1;
+                                this.m = 1;
+                                this.tm = 1;
+                                this.s = 0;
+                                this.ts = 0;
+                                this.ms = 0; 
+                                this.init = 0;
+                                this.readout='00:00:00.00'; 
+                                //document.MyForm.stopwatch.value = readout; 
+                                //document.MyForm.test.value = readout; 
+                            },
+                            StartTIME() { 
+                                var cdateObj = new Date(); 
+                                var t = (cdateObj.getTime() - this.dateObj.getTime()) - (this.s * 1000); 
+                                if (t > 999) { this.s++; } 
+                                if (this.s >= (this.m * this.base)) { 
+                                    this.ts = 0; 
+                                    this.m++; 
+                                } else { 
+                                    this.ts = parseInt((this.ms / 100) + this.s); 
+                                    if(this.ts >= this.base) { this.ts = this.ts -((this.m - 1) * this.base); } 
+                                } 
+                                if (this.m > (this.h * this.base)) { 
+                                    this.tm = 1; 
+                                    this.h++; 
+                                } else { 
+                                    this.tm = parseInt((this.ms / 100) + this.m); 
+                                    if(this.tm >= this.base) { this.tm = this.tm -((this.h - 1) * this.base); } 
+                                } 
+                                this.ms = Math.round(t / 10); 
+                                if (this.ms > 99) {this.ms = 0; } 
+                                if (this.ms == 0) { this.ms='00'; } 
+                                if (this.ms > 0 && this.ms <= 9) { this.ms = '0' + this.ms; } 
+                                if (this.ts > 0) { this.ds = this.ts; if (this.ts < 10) { this.ds = '0' + this.ts; }} else { this.ds = '00'; } 
+                                this.dm = this.tm - 1; 
+                                if (this.dm > 0) { if (this.dm < 10) { this.dm = '0' + this.dm; }} else { this.dm = '00'; } 
+                                this.dh = this.h - 1; 
+                                if (this.dh > 0) { if (this.dh < 10) { this.dh = '0' + this.dh; }} else { this.dh = '00'; } 
+                                this.readout = this.dh + ':' + this.dm + ':' + this.ds + '.' + this.ms; 
+                                //document.MyForm.stopwatch.value = readout; 
+                                //document.MyForm.test.value = readout; 
+                                this.clocktimer = setTimeout(this.StartTIME,1); 
+                            },
+                            StartStop() { 
+                                if (this.init == 0){ 
+                                    this.ClearСlock();
+                                    this.dateObj = new Date(); 
+                                    this.StartTIME(); 
+                                    this.init = 1; 
+                                } else { 
+                                    clearTimeout(this.clocktimer);
+                                    this.init = 0;
+                                } 
+                            } 
                         }
                     })
 
