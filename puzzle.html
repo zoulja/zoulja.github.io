@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link id=​"favicon" rel=​"shortcut icon" type=​"image/​png" href=​"data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQEAYAAABPYyMiAAAABmJLR0T///////8JWPfcAAAACXBIWXMAAABIAAAASABGyWs+AAACbUlEQVRIx7WUsU/qUBTGv96WSlWeEBZijJggxrREdwYixMnByYEyOvgfsBAMG0xuDsZ/QGc3NDFhgTioiYsmkhBYGLSBkLYR0va8gSjvQXiIT7/l5ibfOd/v3pN7gSmVSMTj8ThRfzdYk8lkMpl83/+AVFVVVXU0eHiVJEmSpB8DIcpkMplsdhCYz+fzhQJROBwOh8PDQN+oQCAQCASIRFEURZHI45GkP0/e7Xa73e70AMJnjel0Op1OA6oaDB4eAkAw6PcDvZ5t6zrw/Hx2trAw/cHYZ426ruu6DtzcGEYuBzQa19etFvD4WKtls4AoRqMPDwBjjLGPrt84ilgsFovF6EOapmmaRiP6O/jbAIguL4vFYpHGqlKpVCoVomq1Wq1Wibxer9fn+w+Q9+cUiUQikQhNrfdgWZZlWf4yyGhj27Zt254MUK/X6/X6F0aiKIqiKIOCYRmGYRjGZADLsizLIgqFQqHV1SkAnp5OTn79ItK0qyuPZ7SxaZqmaU4GKJfPzxmbfAPc/f3pqaIQLS8vLtZqgOP0bYyJoiAARC5Xrwf4/Vtbb2+Th1YqlUqlErC01GgkEkCz2WxyHLC+LsuiCAiCJLlcgM+3vd3pcBzXaJTLR0dEs7Ptdv+D4TiOG/A6DsBxQKvV621sAGtru7vl8ngAjuvXv7xcXIgiwNjMjCj2h+k4fQfPA4LA8xwHCO323V2hABiG223bwPy8xwMAbvfcHGMAY32j47y+3t4OAsZpZ2dzEwAsy7IcBxAExhwHMIxOx3GAlZVUyjT/1WFIudzenstFlEpFo9M8o+Pj/X2eJzo4SCR4fnzdb2N4Pyv9cduVAAAAAElFTkSuQmCC">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            width: 538px;
+            margin-top: 10px;
+        }
+
+        .cell {
+            display: flex;
+            justify-content: space-around;
+            align-items: center; 
+            width: 90px;
+            height: 90px;
+            border: 1px solid #aaa;
+            margin-right: -1px;
+            margin-bottom: -1px;
+        }
+        /*.cell:nth-child(3n) {
+margin-right: 0;
+}
+.cell:nth-child(27n) {
+margin-bottom: 0;
+}*/
+
+        .cell-move {
+            transition: transform 1s;
+        }
+
+        .odd {
+            background-color: #f3f3f9;
+        }
+
+        .upsidedown {
+            -webkit-transform: rotate(-180deg);
+        }
+
+
+
+    </style>
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.14.1/lodash.min.js"></script>
+</head>
+
+<body>
+    <div id="sudoku-demo" class="demo">
+        <h1>Train the brain</h1>
+        <p>Keep hitting the shuffle button and catch the sequence.</p>
+
+        <button @click="shuffle">
+          Shuffle
+        </button>
+        <input type="checkbox" id="checkbox" v-model="checked"><label for="checkbox">Перевернуть</label>
+
+        <transition-group name="cell" tag="div" class="container">
+            <div v-for="cell in cells" :key="cell.id" class="cell" v-bind:class="{ odd: cell.number % 2 == 0, upsidedown: checked }">
+                {{ cell.number }}
+
+                <script>
+                    new Vue({
+                        el: '#sudoku-demo',
+                        data: {
+                            cells: Array.apply(null, { length: 25 })
+                                .map(function (_, index) {
+                                    return {
+                                        id: index,
+                                        number: index + 1
+                                    }
+                                }),
+                            checked: true,
+                        
+                        },
+                        methods: {
+                            shuffle: function () {
+                                this.cells = _.shuffle(this.cells)
+                            }
+                        }
+                    })
+
+                </script>
+
+</body>
+
+</html>
