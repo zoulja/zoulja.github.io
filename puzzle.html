@@ -3,7 +3,6 @@
 
 <head>
     <meta charset="UTF-8">
-    <link id=​"favicon" rel=​"shortcut icon" type=​"image/​png" href=​"data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQEAYAAABPYyMiAAAABmJLR0T///////8JWPfcAAAACXBIWXMAAABIAAAASABGyWs+AAACbUlEQVRIx7WUsU/qUBTGv96WSlWeEBZijJggxrREdwYixMnByYEyOvgfsBAMG0xuDsZ/QGc3NDFhgTioiYsmkhBYGLSBkLYR0va8gSjvQXiIT7/l5ibfOd/v3pN7gSmVSMTj8ThRfzdYk8lkMpl83/+AVFVVVXU0eHiVJEmSpB8DIcpkMplsdhCYz+fzhQJROBwOh8PDQN+oQCAQCASIRFEURZHI45GkP0/e7Xa73e70AMJnjel0Op1OA6oaDB4eAkAw6PcDvZ5t6zrw/Hx2trAw/cHYZ426ruu6DtzcGEYuBzQa19etFvD4WKtls4AoRqMPDwBjjLGPrt84ilgsFovF6EOapmmaRiP6O/jbAIguL4vFYpHGqlKpVCoVomq1Wq1Wibxer9fn+w+Q9+cUiUQikQhNrfdgWZZlWf4yyGhj27Zt254MUK/X6/X6F0aiKIqiKIOCYRmGYRjGZADLsizLIgqFQqHV1SkAnp5OTn79ItK0qyuPZ7SxaZqmaU4GKJfPzxmbfAPc/f3pqaIQLS8vLtZqgOP0bYyJoiAARC5Xrwf4/Vtbb2+Th1YqlUqlErC01GgkEkCz2WxyHLC+LsuiCAiCJLlcgM+3vd3pcBzXaJTLR0dEs7Ptdv+D4TiOG/A6DsBxQKvV621sAGtru7vl8ngAjuvXv7xcXIgiwNjMjCj2h+k4fQfPA4LA8xwHCO323V2hABiG223bwPy8xwMAbvfcHGMAY32j47y+3t4OAsZpZ2dzEwAsy7IcBxAExhwHMIxOx3GAlZVUyjT/1WFIudzenstFlEpFo9M8o+Pj/X2eJzo4SCR4fnzdb2N4Pyv9cduVAAAAAElFTkSuQmCC">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
@@ -11,7 +10,7 @@
         .container {
             display: flex;
             flex-wrap: wrap;
-            width: 538px;
+            width: 455px;
             margin-top: 10px;
         }
 
@@ -45,7 +44,13 @@ margin-bottom: 0;
             -webkit-transform: rotate(-180deg);
         }
 
+        .totheright{
+            -webkit-transform: rotate(-90deg);
+        }
 
+        .totheleft{
+            -webkit-transform: rotate(90deg);
+        }
 
     </style>
     <script src="https://unpkg.com/vue"></script>
@@ -63,121 +68,133 @@ margin-bottom: 0;
         </button>
         <input type="checkbox" id="checkbox" v-model="checked"><label for="checkbox" style="margin-right: 10px;">Перевернуть</label><input type=button value="Запуск/Остановить" @click="StartStop"> 
         <!-- <input name="stopwatch" size=10 v-bind:value="readout"> -->
-        <p>{{ readout }} Next one is: {{ nextone }}</p>
+         <!-- <input name="stopwatch" size=10 v-bind:value="readout">  -->
+        <span>{{ readout }}</span><br>
+        <span v-text="nextone <= 25 && clocktimer ? nextone : 'Done!'"></span>
+        <!-- <span v-if="nextone < 25">Next one is: {{ nextone }}</span> -->
+        <!-- <span v-else-if="nextone == 25">Done!</span> -->
+        <!-- <p>{{ readout }} Next one is: {{ nextone }}</p> -->
         
         
         <transition-group name="cell" tag="div" class="container">
-            <div v-for="cell in cells" @click="logcell" :key="cell.id" class="cell" v-bind:class="{ odd: cell.number % 2 == 0, upsidedown: checked }">
+            <!-- <div v-for="cell in cells" @click="logcell" :key="cell.id" class="cell" v-bind:class="cellposition()">; -->
+             <div v-for="cell in cells" @click="logcell" :key="cell.id" class="cell" v-bind:class="{ odd: cell.number % 2 == 0, upsidedown: checked }"> 
                 {{ cell.number }}
             </div></center>
-                <script>
-                    var app = new Vue({
-                        el: '#sudoku-demo',
-                        data: {
-                            cells: Array.apply(null, { length: 25 })
-                                .map(function (_, index) {
-                                    return {
-                                        id: index,
-                                        number: index + 1
-                                    }
-                                }),
-                            disabled:false,
-                            nextone:"1",
-                            checked: true,
-                            base: 60, 
-                            clocktimer: null,
-                            dateObj: null,
-                            dh: null, 
-                            dm: null, 
-                            ds: null,
-                            ms: null, 
-                            readout:'', 
-                            h: 1,
-                            m: 1,
-                            tm: 1,
-                            s: 0,
-                            ts: 0,
-                            ms: 0,
-                            init: 0,
-                            readout:'00:00:00.00',
-                        
-                        },
-                        methods: {
-                           // shuffle: function () {
-                            shuffle () {
-                                this.disabled = true;
-                                setTimeout(()=>{this.disabled = false},1200);
-                                this.ClearСlock();
-                                this.nextone = 1;
-                                this.cells = _.shuffle(this.cells);
-                                setTimeout(this.StartStop,1200);
-                            },
-                            ClearСlock() { 
-                                clearTimeout(this.clocktimer); 
-                                this.h = 1;
-                                this.m = 1;
-                                this.tm = 1;
-                                this.s = 0;
-                                this.ts = 0;
-                                this.ms = 0; 
-                                this.init = 0;
-                                this.readout='00:00:00.00'; 
-                                //document.MyForm.stopwatch.value = readout; 
-                                //document.MyForm.test.value = readout; 
-                            },
-                            StartTIME() { 
-                                var cdateObj = new Date(); 
-                                var t = (cdateObj.getTime() - this.dateObj.getTime()) - (this.s * 1000); 
-                                if (t > 999) { this.s++; } 
-                                if (this.s >= (this.m * this.base)) { 
-                                    this.ts = 0; 
-                                    this.m++; 
-                                } else { 
-                                    this.ts = parseInt((this.ms / 100) + this.s); 
-                                    if(this.ts >= this.base) { this.ts = this.ts -((this.m - 1) * this.base); } 
-                                } 
-                                if (this.m > (this.h * this.base)) { 
-                                    this.tm = 1; 
-                                    this.h++; 
-                                } else { 
-                                    this.tm = parseInt((this.ms / 100) + this.m); 
-                                    if(this.tm >= this.base) { this.tm = this.tm -((this.h - 1) * this.base); } 
-                                } 
-                                this.ms = Math.round(t / 10); 
-                                if (this.ms > 99) {this.ms = 0; } 
-                                if (this.ms == 0) { this.ms='00'; } 
-                                if (this.ms > 0 && this.ms <= 9) { this.ms = '0' + this.ms; } 
-                                if (this.ts > 0) { this.ds = this.ts; if (this.ts < 10) { this.ds = '0' + this.ts; }} else { this.ds = '00'; } 
-                                this.dm = this.tm - 1; 
-                                if (this.dm > 0) { if (this.dm < 10) { this.dm = '0' + this.dm; }} else { this.dm = '00'; } 
-                                this.dh = this.h - 1; 
-                                if (this.dh > 0) { if (this.dh < 10) { this.dh = '0' + this.dh; }} else { this.dh = '00'; } 
-                                this.readout = this.dh + ':' + this.dm + ':' + this.ds + '.' + this.ms; 
-                                //document.MyForm.stopwatch.value = readout; 
-                                //document.MyForm.test.value = readout; 
-                                this.clocktimer = setTimeout(this.StartTIME,1); 
-                            },
-                            StartStop() { 
-                                if (this.init == 0){ 
-                                    this.ClearСlock();
-                                    this.dateObj = new Date(); 
-                                    this.StartTIME(); 
-                                    this.init = 1; 
-                                } else { 
-                                    clearTimeout(this.clocktimer);
-                                    this.init = 0;
-                                } 
-                            },
-                            logcell(event){
-                                console.log(event.srcElement.innerText);
-                                if(event.srcElement.innerText == this.nextone && this.nextone < 25) this.nextone ++;
-                                if(event.srcElement.innerText == this.nextone && this.nextone == 25) this.StartStop();
+<script>
+    var app = new Vue({
+        el: '#sudoku-demo',
+        data: {
+            cells: Array.apply(null, { length: 25 })
+                .map(function (_, index) {
+                    return {
+                        id: index,
+                        number: index + 1
+                    }
+                }),
+            disabled:false,
+            nextone:"1",
+            checked: true,
+            base: 60, 
+            clocktimer: null,
+            dateObj: null,
+            dh: null, 
+            dm: null, 
+            ds: null,
+            ms: null, 
+            readout:'', 
+            h: 1,
+            m: 1,
+            tm: 1,
+            s: 0,
+            ts: 0,
+            ms: 0,
+            init: 0,
+            readout:'00:00:00.00',
+        
+        },
+        methods: {
+            // shuffle: function () {
+            cellposition()
+            {
+                var randomArray = ['totheleft', 'totheright', 'upsidedown', ''];
+                let result = _.sample(randomArray); 
+                return result;
+            },
+            shuffle () {
+                this.disabled = true;
+                setTimeout(()=>{this.disabled = false},1200);
+                this.ClearСlock();
+                this.nextone = 1;
+                this.cells = _.shuffle(this.cells);
+                setTimeout(this.StartStop,1200);
+            },
+            ClearСlock() { 
+                clearTimeout(this.clocktimer); 
+                this.h = 1;
+                this.m = 1;
+                this.tm = 1;
+                this.s = 0;
+                this.ts = 0;
+                this.ms = 0; 
+                this.init = 0;
+                this.readout='00:00:00.00'; 
+                //document.MyForm.stopwatch.value = readout; 
+                //document.MyForm.test.value = readout; 
+            },
+            StartTIME() { 
+                var cdateObj = new Date(); 
+                var t = (cdateObj.getTime() - this.dateObj.getTime()) - (this.s * 1000); 
+                if (t > 999) { this.s++; } 
+                if (this.s >= (this.m * this.base)) { 
+                    this.ts = 0; 
+                    this.m++; 
+                } else { 
+                    this.ts = parseInt((this.ms / 100) + this.s); 
+                    if(this.ts >= this.base) { this.ts = this.ts -((this.m - 1) * this.base); } 
+                } 
+                if (this.m > (this.h * this.base)) { 
+                    this.tm = 1; 
+                    this.h++; 
+                } else { 
+                    this.tm = parseInt((this.ms / 100) + this.m); 
+                    if(this.tm >= this.base) { this.tm = this.tm -((this.h - 1) * this.base); } 
+                } 
+                this.ms = Math.round(t / 10); 
+                if (this.ms > 99) {this.ms = 0; } 
+                if (this.ms == 0) { this.ms='00'; } 
+                if (this.ms > 0 && this.ms <= 9) { this.ms = '0' + this.ms; } 
+                if (this.ts > 0) { this.ds = this.ts; if (this.ts < 10) { this.ds = '0' + this.ts; }} else { this.ds = '00'; } 
+                this.dm = this.tm - 1; 
+                if (this.dm > 0) { if (this.dm < 10) { this.dm = '0' + this.dm; }} else { this.dm = '00'; } 
+                this.dh = this.h - 1; 
+                if (this.dh > 0) { if (this.dh < 10) { this.dh = '0' + this.dh; }} else { this.dh = '00'; } 
+                this.readout = this.dh + ':' + this.dm + ':' + this.ds + '.' + this.ms; 
+                //document.MyForm.stopwatch.value = readout; 
+                //document.MyForm.test.value = readout; 
+                this.clocktimer = setTimeout(this.StartTIME,1); 
+            },
+            StartStop() { 
+                if (this.init == 0){ 
+                    this.ClearСlock();
+                    this.dateObj = new Date(); 
+                    this.StartTIME(); 
+                    this.init = 1; 
+                } else { 
+                    clearTimeout(this.clocktimer);
+                    this.init = 0;
+                } 
+            },
+            logcell(event){
+                console.log(event.srcElement.innerText);
+                if(event.srcElement.innerText == this.nextone && this.nextone < 25) this.nextone ++;
+                if(event.srcElement.innerText == this.nextone && this.nextone == 25) {clearTimeout(this.clocktimer);this.clocktimer = null};
 
-                            }, 
-                        }
-                    })
+            }, 
+        }
+    })
 
-                </script>
+</script>
 
 </body>
 
