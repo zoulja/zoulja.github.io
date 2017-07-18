@@ -44,12 +44,17 @@ margin-bottom: 0;
             -webkit-transform: rotate(-180deg);
         }
 
-        .totheright{
-            -webkit-transform: rotate(-90deg);
+        .finished {
+            color:aqua;
         }
 
-        .totheleft{
-            -webkit-transform: rotate(90deg);
+        .blink_me {
+            animation: blinker 2s linear infinite;
+            text-shadow: 0px 2px 3px #666;
+        }
+
+        @keyframes blinker {  
+            50% { opacity: 0; }
         }
 
     </style>
@@ -69,7 +74,7 @@ margin-bottom: 0;
         <input type="checkbox" id="checkbox" v-model="checked"><label for="checkbox" style="margin-right: 10px;">Перевернуть</label><input type=button value="Запуск/Остановить" @click="StartStop"> 
         <!-- <input name="stopwatch" size=10 v-bind:value="readout"> -->
          <!-- <input name="stopwatch" size=10 v-bind:value="readout">  -->
-        <span>{{ readout }}</span><br>
+         <br><span v-bind:class="{ blink_me:!clocktimer }">{{ readout }}</span>
         <span v-text="nextone <= 25 && clocktimer ? nextone : 'Done!'"></span>
         <!-- <span v-if="nextone < 25">Next one is: {{ nextone }}</span> -->
         <!-- <span v-else-if="nextone == 25">Done!</span> -->
@@ -110,7 +115,8 @@ margin-bottom: 0;
             ts: 0,
             ms: 0,
             init: 0,
-            readout:'00:00:00.00',
+            // readout:'00:00:00.00',
+            readout:'00:00.00',
         
         },
         methods: {
@@ -138,7 +144,8 @@ margin-bottom: 0;
                 this.ts = 0;
                 this.ms = 0; 
                 this.init = 0;
-                this.readout='00:00:00.00'; 
+                this.readout='00:00.00'; 
+                // this.readout='00:00:00.00'; 
                 //document.MyForm.stopwatch.value = readout; 
                 //document.MyForm.test.value = readout; 
             },
@@ -169,7 +176,8 @@ margin-bottom: 0;
                 if (this.dm > 0) { if (this.dm < 10) { this.dm = '0' + this.dm; }} else { this.dm = '00'; } 
                 this.dh = this.h - 1; 
                 if (this.dh > 0) { if (this.dh < 10) { this.dh = '0' + this.dh; }} else { this.dh = '00'; } 
-                this.readout = this.dh + ':' + this.dm + ':' + this.ds + '.' + this.ms; 
+                // this.readout = this.dh + ':' + this.dm + ':' + this.ds + '.' + this.ms; 
+                this.readout = this.dm + ':' + this.ds + '.' + this.ms; 
                 //document.MyForm.stopwatch.value = readout; 
                 //document.MyForm.test.value = readout; 
                 this.clocktimer = setTimeout(this.StartTIME,1); 
