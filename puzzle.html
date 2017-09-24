@@ -201,6 +201,9 @@ margin-bottom: 0;
                 if(event.srcElement.innerText == this.nextone && this.nextone < 25) 
                 {
                     this.nextone ++;
+                }
+                else
+                {
                     window.navigator.vibrate(75);
                 }
                 if(event.srcElement.innerText == this.nextone && this.nextone == 25) {clearTimeout(this.clocktimer);this.clocktimer = null};
