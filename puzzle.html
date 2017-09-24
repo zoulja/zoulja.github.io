@@ -198,7 +198,11 @@ margin-bottom: 0;
             },
             logcell(event){
                 console.log(event.srcElement.innerText);
-                if(event.srcElement.innerText == this.nextone && this.nextone < 25) this.nextone ++;
+                if(event.srcElement.innerText == this.nextone && this.nextone < 25) 
+                {
+                    this.nextone ++;
+                    window.navigator.vibrate(200);
+                }
                 if(event.srcElement.innerText == this.nextone && this.nextone == 25) {clearTimeout(this.clocktimer);this.clocktimer = null};
 
             }, 
