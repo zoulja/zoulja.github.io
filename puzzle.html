@@ -27,7 +27,21 @@
             -moz-user-select: none;
             -khtml-user-select: none;
             user-select: none; 
+            animation: border-pulsate 2s infinite;
         }
+        
+@keyframes border-pulsate {
+    0%   { border-color: rgba(0, 255, 255, 1); }
+    50% { border-color: rgba(0, 255, 255, 0); }
+    100%   { border-color: rgba(0, 255, 255, 1); }
+}
+
+.win {
+    display: block;
+    margin: 20px auto;
+    border: 20px solid cyan;
+    animation: border-pulsate 2s infinite;
+}
         /*.cell:nth-child(3n) {
 margin-right: 0;
 }
@@ -206,7 +220,13 @@ margin-bottom: 0;
                 {
                     window.navigator.vibrate(75);
                 }
-                if(event.srcElement.innerText == this.nextone && this.nextone == 25) {clearTimeout(this.clocktimer);this.clocktimer = null};
+                if(event.srcElement.innerText == this.nextone && this.nextone == 25) 
+                {
+                    
+                    clearTimeout(this.clocktimer);
+                    this.clocktimer = null
+                    //el.toggleClass('win')
+                };
 
             }, 
         }
