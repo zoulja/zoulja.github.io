@@ -1,6 +1,191 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Генератор круговой таблицы</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+        .controls {
+            margin-top: 10px;
+        }
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            table {
+                font-size: 14px;
+            }
+            th, td {
+                padding: 6px;
+            }
+            label {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
 <body>
-    <img src="https://cs11.pikabu.ru/post_img/big/2019/01/05/6/1546677515150962039.jpg" width="500" height="600" alt="tamara">
+    <h1>Генератор круговой таблицы</h1>
+    <label>
+        Количество участников:
+        <input type="number" id="playerCount" min="2" value="4" onchange="updateRounds()">
+    </label>
+    <label>
+        Количество кругов:
+        <input type="number" id="roundCount" min="1" value="3" onchange="updateRounds()">
+    </label>
+
+    <div id="output"></div>
+
+    <script>
+        let rounds = [];
+        let perRoundExclusions = {};
+
+        function updateRounds() {
+            const playerCount = parseInt(document.getElementById('playerCount').value);
+            const roundCount = parseInt(document.getElementById('roundCount').value);
+
+            if (isNaN(playerCount) || playerCount < 2 || isNaN(roundCount) || roundCount < 1) {
+                alert("Введите корректные значения для количества участников и кругов.");
+                return;
+            }
+
+            // Создаем массив игроков
+            const players = Array.from({ length: playerCount }, (_, i) => i + 1);
+
+            // Генерируем раунды
+            rounds = [];
+            for (let round = 0; round < roundCount; round++) {
+                const currentPlayers = players.filter(p => !(perRoundExclusions[round]?.includes(p)));
+                const pairs = generatePairs(currentPlayers);
+                rounds.push(pairs);
+                rotatePlayers(players); // Меняем порядок игроков
+            }
+
+            renderRounds();
+        }
+
+        function generatePairs(players) {
+            const pairs = [];
+            const playerCount = players.length;
+
+            // Если игроков нечётное количество, один отдыхает
+            const restingPlayer = playerCount % 2 !== 0 ? players.pop() : null;
+
+            // Формируем пары
+            const half = Math.floor(players.length / 2);
+            for (let i = 0; i < half; i++) {
+                pairs.push(`${players[i]}-${players[players.length - 1 - i]}`);
+            }
+
+            // Добавляем информацию об игроке, который пропускает
+            if (restingPlayer !== null) {
+                pairs.push(`${restingPlayer} (пропускает)`);
+            }
+
+            return pairs;
+        }
+
+        function rotatePlayers(players) {
+            if (players.length <= 2) return;
+
+            // Разбиваем на две части: первая часть фиксирована, остальная вращается
+            const fixed = players[0];
+            const rotating = players.slice(1);
+
+            // Сдвигаем вращающуюся часть
+            rotating.unshift(rotating.pop());
+
+            // Собираем обратно массив игроков
+            players.splice(0, players.length, fixed, ...rotating);
+        }
+
+        function toggleExcludeForRound(round, player) {
+            if (!perRoundExclusions[round]) {
+                perRoundExclusions[round] = [];
+            }
+
+            const excluded = perRoundExclusions[round];
+            if (excluded.includes(player)) {
+                perRoundExclusions[round] = excluded.filter(p => p !== player);
+            } else {
+                excluded.push(player);
+            }
+
+            updateRounds(); // Перегенерируем раунды
+        }
+
+        function renderRounds() {
+            const output = document.getElementById('output');
+            output.innerHTML = '';
+
+            const table = document.createElement('table');
+            const header = document.createElement('tr');
+            header.innerHTML = `
+                <th>#</th>
+                <th>Пары</th>
+                <th>Отдыхают</th>
+            `;
+            table.appendChild(header);
+
+            rounds.forEach((round, index) => {
+                const row = document.createElement('tr');
+
+                const excludeControls = document.createElement('div');
+                const playerCount = parseInt(document.getElementById('playerCount').value);
+
+                for (let player = 1; player <= playerCount; player++) {
+                    const label = document.createElement('label');
+                    label.style.marginRight = '5px';
+                    label.innerHTML = `
+                        <input type="checkbox" onchange="toggleExcludeForRound(${index}, ${player})" ${
+                        perRoundExclusions[index]?.includes(player) ? 'checked' : ''
+                    }> ${player}
+                    `;
+                    excludeControls.appendChild(label);
+                }
+
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${round.join(', ')}</td>
+                `;
+
+                const excludeCell = document.createElement('td');
+                excludeCell.appendChild(excludeControls);
+                row.appendChild(excludeCell);
+
+                table.appendChild(row);
+            });
+
+            output.appendChild(table);
+        }
+
+        // Начальная генерация
+        updateRounds();
+    </script>
 </body>
 </html>
+
