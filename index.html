@@ -11,6 +11,10 @@
             margin: 0 auto;
             padding: 20px;
         }
+        h1 {
+            font-size: 18px;
+            text-align: center;
+        }
         table {
             border-collapse: collapse;
             width: 100%;
@@ -25,11 +29,25 @@
             background-color: #f4f4f4;
         }
         label {
-            display: block;
+            display: inline-block;
             margin-bottom: 10px;
+            margin-right: 5px;
         }
         .controls {
             margin-top: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .controls span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        button {
+            font-size: 16px;
+            padding: 5px 10px;
+            cursor: pointer;
         }
         @media (max-width: 600px) {
             body {
@@ -44,19 +62,31 @@
             label {
                 font-size: 14px;
             }
+            button {
+                font-size: 14px;
+                padding: 5px;
+            }
         }
     </style>
 </head>
 <body>
     <h1>Генератор круговой таблицы</h1>
-    <label>
-        Количество участников:
-        <input type="number" id="playerCount" min="2" value="4" onchange="updateRounds()">
-    </label>
-    <label>
-        Количество кругов:
-        <input type="number" id="roundCount" min="1" value="3" onchange="updateRounds()">
-    </label>
+
+    <div class="controls">
+        <span>
+            <label for="playerCount">Количество игроков:</label>
+            <button onclick="changeValue('playerCount', -1)">−</button>
+            <input type="number" id="playerCount" min="2" value="4" onchange="updateRounds()" readonly>
+            <button onclick="changeValue('playerCount', 1)">+</button>
+        </span>
+        <br>
+        <span>
+            <label for="roundCount">Количество кругов:</label>
+            <button onclick="changeValue('roundCount', -1)">−</button>
+            <input type="number" id="roundCount" min="1" value="3" onchange="updateRounds()" readonly>
+            <button onclick="changeValue('roundCount', 1)">+</button>
+        </span>
+    </div>
 
     <div id="output"></div>
 
@@ -64,12 +94,23 @@
         let rounds = [];
         let perRoundExclusions = {};
 
+        function changeValue(id, delta) {
+            const input = document.getElementById(id);
+            const currentValue = parseInt(input.value);
+            const newValue = currentValue + delta;
+
+            if ((id === 'playerCount' && newValue >= 2) || (id === 'roundCount' && newValue >= 1)) {
+                input.value = newValue;
+                updateRounds();
+            }
+        }
+
         function updateRounds() {
             const playerCount = parseInt(document.getElementById('playerCount').value);
             const roundCount = parseInt(document.getElementById('roundCount').value);
 
             if (isNaN(playerCount) || playerCount < 2 || isNaN(roundCount) || roundCount < 1) {
-                alert("Введите корректные значения для количества участников и кругов.");
+                alert("Введите корректные значения для количества игроков и кругов.");
                 return;
             }
 
@@ -103,7 +144,7 @@
 
             // Добавляем информацию об игроке, который пропускает
             if (restingPlayer !== null) {
-                pairs.push(`${restingPlayer} (пропускает)`);
+                pairs.push(`${restingPlayer} (нет пары)`);
             }
 
             return pairs;
@@ -147,7 +188,7 @@
             header.innerHTML = `
                 <th>#</th>
                 <th>Пары</th>
-                <th>Отдыхают</th>
+                <th>Исключённые игроки</th>
             `;
             table.appendChild(header);
 
@@ -188,4 +229,3 @@
     </script>
 </body>
 </html>
-
