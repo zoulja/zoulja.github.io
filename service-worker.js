@@ -6,7 +6,6 @@ self.addEventListener('install', (event) => {
       return cache.addAll([
         '/', // Главная страница
         '/index.html',
-        '/style.css',
         '/script.js',
         '/manifest.json',
       ]);
