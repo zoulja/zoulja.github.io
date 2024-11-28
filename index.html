@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Генератор круговой таблицы</title>
+    <title>Генерирую круговую таблицу от души, да</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -28,27 +28,27 @@
         th {
             background-color: #f4f4f4;
         }
-        label {
-            display: inline-block;
-            margin-bottom: 10px;
-        }
         .controls {
             margin-top: 10px;
         }
         .control-group {
-            margin-bottom: 10px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .control-label {
+            font-size: 16px;
+            flex: 1;
+        }
+        .control-buttons {
+            display: flex;
+            gap: 5px;
         }
         button {
             font-size: 16px;
             padding: 5px 10px;
             cursor: pointer;
-        }
-        input[type="number"] {
-            width: 60px;
-            text-align: center;
         }
         @media (max-width: 600px) {
             body {
@@ -60,39 +60,33 @@
             th, td {
                 padding: 6px;
             }
-            label {
-                font-size: 14px;
-            }
             button {
                 font-size: 14px;
                 padding: 5px;
             }
-            .control-group {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 5px;
-            }
-            input[type="number"] {
-                width: 100px;
+            .control-label {
+                font-size: 14px;
             }
         }
     </style>
 </head>
 <body>
-    <h1>Генерирую круговую таблицу по-братски 🤗</h1>
+    <h1>Генерирую круговую таблицу от души, да</h1>
 
     <div class="controls">
         <div class="control-group">
-            <label for="playerCount">Тигров:</label>
-            <button onclick="changeValue('playerCount', -1)">−</button>
-            <input type="number" id="playerCount" min="2" value="4" onchange="updateRounds()" readonly>
-            <button onclick="changeValue('playerCount', 1)">+</button>
+            <span class="control-label">Тигров: <span id="playerCountLabel">4</span></span>
+            <div class="control-buttons">
+                <button onclick="changeValue('playerCount', -1)">−</button>
+                <button onclick="changeValue('playerCount', 1)">+</button>
+            </div>
         </div>
         <div class="control-group">
-            <label for="roundCount">Кругов:</label>
-            <button onclick="changeValue('roundCount', -1)">−</button>
-            <input type="number" id="roundCount" min="1" value="3" onchange="updateRounds()" readonly>
-            <button onclick="changeValue('roundCount', 1)">+</button>
+            <span class="control-label">Кругов: <span id="roundCountLabel">3</span></span>
+            <div class="control-buttons">
+                <button onclick="changeValue('roundCount', -1)">−</button>
+                <button onclick="changeValue('roundCount', 1)">+</button>
+            </div>
         </div>
     </div>
 
@@ -102,36 +96,38 @@
         let rounds = [];
         let perRoundExclusions = {};
 
-        function changeValue(id, delta) {
-            const input = document.getElementById(id);
-            const currentValue = parseInt(input.value);
-            const newValue = currentValue + delta;
+        function changeValue(type, delta) {
+            let count;
+            if (type === 'playerCount') {
+                count = parseInt(document.getElementById('playerCountLabel').innerText);
+            } else if (type === 'roundCount') {
+                count = parseInt(document.getElementById('roundCountLabel').innerText);
+            }
 
-            if ((id === 'playerCount' && newValue >= 2) || (id === 'roundCount' && newValue >= 1)) {
-                input.value = newValue;
+            const newValue = count + delta;
+            if ((type === 'playerCount' && newValue >= 2) || (type === 'roundCount' && newValue >= 1)) {
+                document.getElementById(`${type}Label`).innerText = newValue;
                 updateRounds();
             }
         }
 
         function updateRounds() {
-            const playerCount = parseInt(document.getElementById('playerCount').value);
-            const roundCount = parseInt(document.getElementById('roundCount').value);
+            const playerCount = parseInt(document.getElementById('playerCountLabel').innerText);
+            const roundCount = parseInt(document.getElementById('roundCountLabel').innerText);
 
             if (isNaN(playerCount) || playerCount < 2 || isNaN(roundCount) || roundCount < 1) {
-                alert("Введите корректные значения для количества игроков и кругов.");
+                alert("Введите корректные значения для количества участников и кругов.");
                 return;
             }
 
-            // Создаем массив игроков
             const players = Array.from({ length: playerCount }, (_, i) => i + 1);
 
-            // Генерируем раунды
             rounds = [];
             for (let round = 0; round < roundCount; round++) {
                 const currentPlayers = players.filter(p => !(perRoundExclusions[round]?.includes(p)));
                 const pairs = generatePairs(currentPlayers);
                 rounds.push(pairs);
-                rotatePlayers(players); // Меняем порядок игроков
+                rotatePlayers(players);
             }
 
             renderRounds();
@@ -141,16 +137,13 @@
             const pairs = [];
             const playerCount = players.length;
 
-            // Если игроков нечётное количество, один отдыхает
             const restingPlayer = playerCount % 2 !== 0 ? players.pop() : null;
 
-            // Формируем пары
             const half = Math.floor(players.length / 2);
             for (let i = 0; i < half; i++) {
                 pairs.push(`${players[i]}-${players[players.length - 1 - i]}`);
             }
 
-            // Добавляем информацию об игроке, который пропускает
             if (restingPlayer !== null) {
                 pairs.push(`${restingPlayer} (нет пары ☹️)`);
             }
@@ -161,14 +154,9 @@
         function rotatePlayers(players) {
             if (players.length <= 2) return;
 
-            // Разбиваем на две части: первая часть фиксирована, остальная вращается
             const fixed = players[0];
             const rotating = players.slice(1);
-
-            // Сдвигаем вращающуюся часть
             rotating.unshift(rotating.pop());
-
-            // Собираем обратно массив игроков
             players.splice(0, players.length, fixed, ...rotating);
         }
 
@@ -184,7 +172,7 @@
                 excluded.push(player);
             }
 
-            updateRounds(); // Перегенерируем раунды
+            updateRounds();
         }
 
         function renderRounds() {
@@ -204,7 +192,7 @@
                 const row = document.createElement('tr');
 
                 const excludeControls = document.createElement('div');
-                const playerCount = parseInt(document.getElementById('playerCount').value);
+                const playerCount = parseInt(document.getElementById('playerCountLabel').innerText);
 
                 for (let player = 1; player <= playerCount; player++) {
                     const label = document.createElement('label');
@@ -232,7 +220,6 @@
             output.appendChild(table);
         }
 
-        // Начальная генерация
         updateRounds();
     </script>
 </body>
