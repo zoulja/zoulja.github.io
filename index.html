@@ -122,7 +122,9 @@
                 return;
             }
 
-            const players = Array.from({ length: playerCount }, (_, i) => i + 1);
+//            const players = Array.from({ length: playerCount }, (_, i) => i + 1);
+            const players = Array.from({ length: playerCount }, (_, i) => i + 1)
+    .sort(() => Math.random() - 0.5);
 
             rounds = [];
             for (let round = 0; round < roundCount; round++) {
