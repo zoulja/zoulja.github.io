@@ -1,0 +1,92 @@
+body {
+    font-family: Arial, sans-serif;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h1 {
+    font-size: 18px;
+    text-align: center;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 20px;
+}
+
+th, td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: center;
+    word-break: break-word;
+}
+
+th {
+    background-color: #f4f4f4;
+}
+
+/* Новые стили для пар */
+td:nth-child(2) {
+    white-space: nowrap; /* Запрещаем перенос строк */
+}
+
+/* Чекбоксы: компактное отображение в строку */
+td:nth-child(3) div {
+    display: flex; /* Включаем флекс-блок для чекбоксов */
+    flex-wrap: wrap; /* Позволяем перенос на новую строку только при нехватке места */
+    gap: 10px; /* Задаем отступы между чекбоксами */
+    justify-content: center; /* Центрируем чекбоксы по горизонтали */
+}
+
+td:nth-child(3) label {
+    display: inline-block; /* Чекбокс с номером в одной строке */
+    white-space: nowrap; /* Запрещаем перенос строки внутри одной метки */
+}
+
+.controls {
+    margin-top: 10px;
+}
+
+.control-group {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.control-label {
+    font-size: 16px;
+    flex: 1;
+}
+
+.control-buttons {
+    display: flex;
+    gap: 5px;
+}
+
+button {
+    font-size: 25px;
+    padding: 5px 20px;
+    cursor: pointer;
+}
+
+@media (max-width: 600px) {
+    body {
+        padding: 10px;
+    }
+    table {
+        font-size: 14px;
+    }
+    th, td {
+        padding: 6px;
+    }
+    button {
+        font-size: 50px;
+        padding: 15;
+    }
+    .control-label {
+        font-size: 24px;
+    }
+}
