@@ -3,31 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Генерирую круговую таблицу от души, да</title>
+    <title>Круговая таблица пар</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="manifest" href="manifest.json">
     <script src="script.js" defer></script>
 </head>
 <body>
-    <h1>Вах, какая круговая таблица 🤩</h1>
-
-    <div class="controls">
-        <div class="control-group">
-            <span class="control-label">Тигров: <span id="playerCountLabel">10</span></span>
-            <div class="control-buttons">
-                <button data-type="playerCount" data-delta="-1">−</button>
-                <button data-type="playerCount" data-delta="1">+</button>
+    <header>
+        <h1>Круговая таблица пар 🤼</h1>
+        <div class="theme-toggle">
+            <input type="checkbox" id="theme-switch" class="theme-switch-input">
+            <label for="theme-switch" class="theme-switch-label">
+                <span class="theme-switch-icon">☀️</span>
+                <span class="theme-switch-icon">🌙</span>
+            </label>
+        </div>
+    </header>
+    
+    <main>
+        <div class="controls" aria-label="Настройки генерации">
+            <div class="control-group">
+                <label for="playerCountLabel">Тигров:</label>
+                <span id="playerCountLabel" aria-live="polite">10</span>
+                <div class="control-buttons">
+                    <button 
+                        data-type="playerCount" 
+                        data-delta="-1" 
+                        aria-label="Уменьшить количество тигров"
+                    >−</button>
+                    <button 
+                        data-type="playerCount" 
+                        data-delta="1" 
+                        aria-label="Увеличить количество тигров"
+                    >+</button>
+                </div>
+            </div>
+            
+            <div class="control-group">
+                <label for="roundCountLabel">Кругов:</label>
+                <span id="roundCountLabel" aria-live="polite">3</span>
+                <div class="control-buttons">
+                    <button 
+                        data-type="roundCount" 
+                        data-delta="-1" 
+                        aria-label="Уменьшить количество кругов"
+                    >−</button>
+                    <button 
+                        data-type="roundCount" 
+                        data-delta="1" 
+                        aria-label="Увеличить количество кругов"
+                    >+</button>
+                </div>
             </div>
         </div>
-        <div class="control-group">
-            <span class="control-label">Кругов: <span id="roundCountLabel">3</span></span>
-            <div class="control-buttons">
-                <button data-type="roundCount" data-delta="-1">−</button>
-                <button data-type="roundCount" data-delta="1">+</button>
-            </div>
-        </div>
-    </div>
 
-    <div id="output"></div>
+        <div id="output" aria-live="polite"></div>
+    </main>
 </body>
 </html>
