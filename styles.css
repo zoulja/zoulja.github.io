@@ -1,103 +1,119 @@
+:root {
+    /* Light Theme */
+    --bg-primary: #ffffff;
+    --bg-secondary: #f4f4f4;
+    --text-primary: #333333;
+    --text-secondary: #666666;
+    --accent-color: #3498db;
+    --border-color: #dddddd;
+
+    color-scheme: light;
+}
+
+:root.dark-theme {
+    /* Dark Theme */
+    --bg-primary: #121212;
+    --bg-secondary: #1e1e1e;
+    --text-primary: #ffffff;
+    --text-secondary: #bbbbbb;
+    --accent-color: #4ecdc4;
+    --border-color: #444444;
+
+    color-scheme: dark;
+}
+
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     max-width: 800px;
     margin: 0 auto;
-    padding: 20px;
+    padding: 1.25rem;
+    line-height: 1.6;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    transition: background-color 0.3s, color 0.3s;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
 }
 
 h1 {
-    font-size: 18px;
+    font-size: 1.5rem;
     text-align: center;
+    color: var(--accent-color);
+    margin: 0;
 }
 
 table {
     border-collapse: collapse;
     width: 100%;
-    margin-top: 20px;
+    margin-top: 1.25rem;
+    background-color: var(--bg-secondary);
 }
 
 th, td {
-    border: 1px solid #ccc;
-    padding: 8px;
+    border: 1px solid var(--border-color);
+    padding: 0.5rem;
     text-align: center;
-    word-break: break-word;
+    color: var(--text-primary);
 }
 
 th {
-    background-color: #f4f4f4;
-}
-
-/* Фиксированная ширина колонок */
-/* Вторая колонка с номерами пар, без переноса по дефису */
-td:nth-child(2),
-th:nth-child(2) {
-    width: 45%; /* Одинаковая ширина для этой колонки */
-    word-wrap: break-word; /* Разрешаем перенос текста по пробелу */
-    white-space: normal; /* Разрешаем перенос по пробелу */
-    word-break: break-word; /* Разрешаем перенос по пробелу, но не по дефису */
-}
-
-td:nth-child(3),
-th:nth-child(3) {
-    width: 45%; /* Задаем фиксированную ширину для колонок с чекбоксами */
-}
-
-/* Чекбоксы: компактное отображение в строку */
-td:nth-child(3) div {
-    display: flex; /* Включаем флекс-блок для чекбоксов */
-    flex-wrap: wrap; /* Позволяем перенос на новую строку только при нехватке места */
-    gap: 10px; /* Задаем отступы между чекбоксами */
-    justify-content: center; /* Центрируем чекбоксы по горизонтали */
-}
-
-td:nth-child(3) label {
-    display: inline-block; /* Чекбокс с номером в одной строке */
-    white-space: nowrap; /* Запрещаем перенос строки внутри одной метки */
-}
-
-.controls {
-    margin-top: 10px;
-}
-
-.control-group {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 10px;
-}
-
-.control-label {
-    font-size: 16px;
-    flex: 1;
-}
-
-.control-buttons {
-    display: flex;
-    gap: 5px;
+    background-color: var(--bg-secondary);
+    font-weight: 600;
 }
 
 button {
-    font-size: 25px;
-    padding: 5px 20px;
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
     cursor: pointer;
-    touch-action: manipulation;
+    transition: background-color 0.2s;
 }
 
+button:hover {
+    opacity: 0.9;
+}
+
+/* Theme Toggle Styles */
+.theme-toggle {
+    display: flex;
+    align-items: center;
+}
+
+.theme-switch-input {
+    display: none;
+}
+
+.theme-switch-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    background-color: var(--bg-secondary);
+    border-radius: 20px;
+    padding: 0.25rem;
+}
+
+.theme-switch-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 0.25rem;
+}
+
+.theme-switch-input:checked + .theme-switch-label {
+    background-color: var(--accent-color);
+}
+
+/* Responsive adjustments */
 @media (max-width: 600px) {
     body {
-        padding: 10px;
-    }
-    table {
-        font-size: 14px;
-    }
-    th, td {
-        padding: 6px;
-    }
-    button {
-        font-size: 50px;
-        padding: 15;
-    }
-    .control-label {
-        font-size: 24px;
+        padding: 0.625rem;
     }
 }
