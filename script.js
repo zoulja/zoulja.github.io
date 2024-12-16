@@ -76,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     
         if (restingPlayer !== null) {
-            pairs.push(`${restingPlayer} (нет пары ☹️)`);
+            pairs.push(`<br>${restingPlayer} (нет пары ☹️)`);
         }
     
         return pairs;
