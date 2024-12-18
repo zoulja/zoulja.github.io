@@ -103,8 +103,10 @@ document.addEventListener("DOMContentLoaded", () => {
             excluded.push(player);
         }
     
-        updateRound(round);
+        // Simply re-render the round without re-generating pairs
+        renderRounds();
     };
+    
     
     const updateRound = roundIndex => {
         const playerCount = parseInt(playerCountLabel.innerText);
@@ -132,28 +134,44 @@ document.addEventListener("DOMContentLoaded", () => {
     
         rounds.forEach((round, index) => {
             const row = document.createElement("tr");
+            const excludedPlayers = perRoundExclusions[index] || [];
+    
+            // Process pairs and apply red styling to excluded players
+            const styledPairs = round.map(pair => {
+                return pair
+                    .split("-") // Split pair into individual players
+                    .map(player => {
+                        const playerNumber = parseInt(player, 10);
+                        return excludedPlayers.includes(playerNumber)
+                            ? `<span style="color: red;">${player}</span>`
+                            : player;
+                    })
+                    .join("-"); // Rejoin the pair with the separator
+            });
+    
+            row.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${styledPairs.join(", ")}</td>
+            `;
+    
+            const excludeCell = document.createElement("td");
             const excludeControls = document.createElement("div");
             const playerCount = parseInt(playerCountLabel.innerText);
     
             for (let player = 1; player <= playerCount; player++) {
+                const isExcluded = excludedPlayers.includes(player);
                 const label = document.createElement("label");
                 label.style.marginRight = "5px";
                 label.innerHTML = `
                     <input 
                         type="checkbox" 
                         onchange="window.toggleExcludeForRound(${index}, ${player})" 
-                        ${perRoundExclusions[index]?.includes(player) ? "checked" : ""}
+                        ${isExcluded ? "checked" : ""}
                     > ${player}
                 `;
                 excludeControls.appendChild(label);
             }
     
-            row.innerHTML = `
-                <td>${index + 1}</td>
-                <td>${round.join(", ")}</td>
-            `;
-    
-            const excludeCell = document.createElement("td");
             excludeCell.appendChild(excludeControls);
             row.appendChild(excludeCell);
             table.appendChild(row);
@@ -162,6 +180,7 @@ document.addEventListener("DOMContentLoaded", () => {
         output.appendChild(table);
     };
     
+
     document.querySelectorAll("button").forEach(button => {
         const type = button.getAttribute("data-type");
         const delta = parseInt(button.getAttribute("data-delta"), 10);
